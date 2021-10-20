@@ -113,8 +113,29 @@ nml_mat* nml_mat_fromfile(FILE *f){
 }
 int nml_mat_equaldim(nml_mat* m1,nml_mat* m2){
     if(m1->num_cols == m2->num_cols && m1->num_rows == m2->num_rows){
+        return 1;
+    }else{
+        return 0;
+    }
+}
+
+int nml_mat_equal(nml_mat* m1,nml_mat* m2){
+    if(nml_mat_equaldim(m1,m2) == 0){
+        printf("Dimensions of matrix unequal");
         return 0;
     }else{
-        return -1;
+       int i,j;
+       int flag=1;
+       for(i=0;i<m1->num_rows;++i){
+           for(j=0;j<m1->num_rows;++j){
+               if(m1->data[i][j] == m2->data[i][j]){
+                   continue;
+               }else{
+                   flag = 0;
+                   break;
+               }
+           }
+       }
+       return flag;
     }
 }

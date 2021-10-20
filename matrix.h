@@ -43,4 +43,7 @@ nml_mat* nml_mat_sqr_rnd(unsigned int rowCol,int min,int max);
 //check if matrix has same dimensions
 int nml_mat_equaldim(nml_mat* m1,nml_mat* m2);
 
+//check matrix equality
+int nml_mat_equal(nml_mat* m1,nml_mat* m2);
+
 #endif
