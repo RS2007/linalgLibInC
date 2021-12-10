@@ -305,3 +305,21 @@ nml_mat *nml_mat_remove_row(nml_mat* matrix,unsigned int row){
     }
     return r;
 }
+
+nml_mat* nml_mat_add(nml_mat* matrix1,nml_mat* matrix2){
+	if(matrix1->num_rows != matrix2->num_rows || matrix1->num_cols != matrix2->num_cols){
+	perror("Cannot add matrices of different dimensions");
+	return NULL;	
+	}
+	nml_mat* sum = nml_mat_new(matrix1->num_rows,matrix1->num_cols);
+	int i,j;
+	for(i = 0;i<matrix1->num_rows;++i){
+		for(j = 0;j<matrix1->num_cols;++j){
+			sum->data[i][j] = matrix1->data[i][j] + matrix2->data[i][j];	
+		}
+	}	
+	return sum;
+}
+	
+
+

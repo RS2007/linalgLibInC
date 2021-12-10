@@ -3,3 +3,5 @@
 *.js
 .vscode
 /cmake-build-debug
+.idea
+.vscode
