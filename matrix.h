@@ -64,7 +64,7 @@ nml_mat *nml_row_multipy_scalar(nml_mat *matrix, unsigned int row, int scalar);
 nml_mat *nml_col_multiply_scalar(nml_mat *matrix, unsigned int col, int scalar);
 
 // adding rows in a matrix(for gaussian elimination or something like that
-nml_mat *nml_rows_add(nml_mat *matrix, unsigned int addendum, unsigned int original, int multiplier);
+nml_mat *nml_rows_add(nml_mat *matrix, unsigned int addendum, unsigned int original, double multiplier);
 
 // printing a matrix
 void nml_mat_print(nml_mat *matrix);

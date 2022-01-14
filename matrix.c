@@ -229,13 +229,13 @@ nml_mat *nml_col_multiply_scalar(nml_mat *matrix, unsigned int col, int scalar)
 	return matrix;
 }
 
-nml_mat *nml_rows_add(nml_mat *matrix, unsigned int addendum, unsigned int original, int multiplier)
+nml_mat *nml_rows_add(nml_mat *matrix, unsigned int addendum, unsigned int original, double multiplier)
 {
 	int i;
 	nml_mat *copy = nml_mat_cp(matrix);
 	for (i = 0; i < matrix->num_cols; ++i)
 	{
-		copy->data[original - 1][i] = copy->data[original - 1][i] + multiplier * copy->data[addendum - 1][i];
+		copy->data[original][i] = copy->data[original][i] + multiplier * copy->data[addendum][i];
 	}
 	return copy;
 }
@@ -449,11 +449,75 @@ int nml_mat_get_col_pivot(nml_mat *matrix, unsigned int col, unsigned int row)
 
 nml_mat *nml_mat_ref(nml_mat *matrix)
 {
-	nml_mat *r = nml_mat_cp(matrix);
-	int i, j, k, pivot;
-	j = 0, i = 0;
-	while (j < matrix->num_cols && i < matrix->num_cols)
-	{
-		pivot = nml_mat_get_col_pivot(matrix, i)
-	}
+	/* trying to make sense of what they are doing
+		unsigned int currentRow = 0
+		for( unsigned int c = 0;c<m->cols;++c){
+			unsigned int r = currentRow;
+			if(r >= m->rows){
+				break; when the guys stupid(error handling)
+			}
+			for(;r<m->rows;r++){
+				if(m->elements[r][c] != 0.0f){
+					break
+				}
+			}
+			if(r == m->rows){
+				continue;
+			}
+			swapRows(m,currentRow+1,r+1); checking the first non zero and then swapping if necessary for right zeroes structure
+
+			float factor = 1/m->elements[currentRow][c];
+			for (unsigned int col = c;col<m->cols;++c){
+				m->elements[currentRow][col] *= factor;
+			}
+
+			for(r = currentRow+1;r<m->rows;++r){
+				addMultiple(m,r+1,currentRow+1,-1*m->elements[r][c]);
+			}
+			currentRow++;
+		}
+	*/
+
+	// Row echelon form(staircase form)
+	//  -- all zeroes at bottom
+	//  -- first nonzero entry from left is a 1(leading 1)
+	//  -- each leading 1 is to the right of the leading 1s in rows above
+
+	// Gaussian algorithm - convert matrices to REF()
+	//  -- If matrix all zeroes in REF
+	//  -- For each column
+	//  -- Find first row from top containing nonzero entry , move to top
+	//  -- Multiplly new top row by 1/a to get leading 1
+	//  -- subtract multiples of that row from rows below it to get zeros under leading 1
+	nml_mat *copy = nml_mat_cp(matrix);
+    int i,j;
+    for(i = 0;i<copy->num_cols;++i){
+        int pivot = nml_mat_get_col_pivot(copy,i,i);
+        if(pivot<0)
+            continue;
+        if(pivot != i)
+            copy = nml_mat_swap_row(copy,i,pivot);
+        for(j = i+1;j<copy->num_rows;++j){
+                copy = nml_rows_add(copy,i,j,-(copy->data[j][i])/copy->data[i][i]);
+        }
+
+    }
+    return copy;
+	// !REFACTOR change into a for loop
+    
+	//	num_rows,num_cols = arr.shape
+	// if(num_rows != num_cols): return "error"
+	// for k in range(num_rows-1):
+	//		for i in range(k+1,num_rows):
+	//			if arr[i,k] == 0: continue
+	//			factor = arr[k,k]/arr[i,k]
+	//			for j in range(k,num_rows):
+	//				arr[i,j] = arr[k,j] - arr[i,j]*factor
+}
+
+nml_mat *nml_mat_rref(nml_mat *matrix)
+{
+	nml_mat *copy = nml_mat_cp(matrix);
+	copy = nml_mat_ref(matrix);
+	return copy;
 }

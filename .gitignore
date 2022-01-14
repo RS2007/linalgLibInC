@@ -5,3 +5,7 @@
 /cmake-build-debug
 .idea
 .vscode
+*.swo
+*.swp
+*.o
+*.ipynb
