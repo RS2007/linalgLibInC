@@ -58,10 +58,10 @@ nml_mat *nml_set_all_elements(nml_mat *matrix, double num);
 nml_mat *nml_set_diagonal_elements(nml_mat *matrix, double num);
 
 // multiply a row with a scalar
-nml_mat *nml_row_multipy_scalar(nml_mat *matrix, unsigned int row, int scalar);
+nml_mat *nml_row_multipy_scalar(nml_mat *matrix, unsigned int row, double scalar);
 
 // multiply a col with a scalar
-nml_mat *nml_col_multiply_scalar(nml_mat *matrix, unsigned int col, int scalar);
+nml_mat *nml_col_multiply_scalar(nml_mat *matrix, unsigned int col, double scalar);
 
 // adding rows in a matrix(for gaussian elimination or something like that
 nml_mat *nml_rows_add(nml_mat *matrix, unsigned int addendum, unsigned int original, double multiplier);
@@ -109,6 +109,7 @@ int nml_mat_get_col_pivot(nml_mat *matrix, unsigned int col, unsigned int row);
 nml_mat *nml_mat_ref(nml_mat *matrix);
 
 // reduced row echelon form
+nml_mat *nml_mat_rref(nml_mat *matrix);
 
 // LU(P) decomposition
 

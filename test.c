@@ -24,7 +24,12 @@ int main(int argc, char *argv[])
     new->data[3][2] = 6;
     new->data[3][3] = 5;
     new->data[3][4] = 7;
-    nml_mat *ref = nml_mat_ref(new);
-    nml_mat_print(ref);
+    nml_mat *rref = nml_mat_rref(new);
+    nml_mat_print(rref);
+    int i;
+    printf("Solution is : \n");
+    for(i = 0;i<rref->num_rows;++i){
+        printf("%lf ",rref->data[i][4]);
+    }
     return 0;
 }

@@ -210,7 +210,7 @@ nml_mat *nml_set_diagonal_elements(nml_mat *matrix, double num)
 	return copy;
 }
 
-nml_mat *nml_row_multipy_scalar(nml_mat *matrix, unsigned int row, int scalar)
+nml_mat *nml_row_multipy_scalar(nml_mat *matrix, unsigned int row, double scalar)
 {
 	int i;
 	for (i = 0; i < matrix->num_cols; ++i)
@@ -219,7 +219,7 @@ nml_mat *nml_row_multipy_scalar(nml_mat *matrix, unsigned int row, int scalar)
 	}
 	return matrix;
 }
-nml_mat *nml_col_multiply_scalar(nml_mat *matrix, unsigned int col, int scalar)
+nml_mat *nml_col_multiply_scalar(nml_mat *matrix, unsigned int col, double scalar)
 {
 	int i;
 	for (i = 0; i < matrix->num_cols; ++i)
@@ -518,6 +518,21 @@ nml_mat *nml_mat_ref(nml_mat *matrix)
 nml_mat *nml_mat_rref(nml_mat *matrix)
 {
 	nml_mat *copy = nml_mat_cp(matrix);
-	copy = nml_mat_ref(matrix);
+	int i,j;
+	for(i = 0;i<copy->num_cols;++i){
+		int pivot = nml_mat_get_col_pivot(copy,i,i);
+		if(pivot<0)
+			continue;
+		if(pivot != i)		
+			copy = nml_mat_swap_row(copy,i,pivot);
+		copy = nml_row_multipy_scalar(copy,i,1/copy->data[i][i]);
+		nml_mat_print(copy);
+		for(j = 0;j<copy->num_rows;++j){
+			if(j != i){
+				copy = nml_rows_add(copy,i,j,-(copy->data[j][i]));
+			}	
+			continue;
+		}
+	}
 	return copy;
 }
