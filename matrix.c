@@ -536,3 +536,47 @@ nml_mat *nml_mat_rref(nml_mat *matrix)
 	}
 	return copy;
 }
+
+nml_mat_lup* nml_mat_lup_new(nml_mat* L,nml_mat* U,nml_mat* P,unsigned int num_permutations){
+    nml_mat_lup *r = malloc(sizeof(*r));
+    r->L = L;
+    r->U = U;
+    r->P = P;
+    r->num_permutations= num_permutations;
+    return r;
+}
+
+void nml_mat_lup_free(nml_mat_lup* LUP){
+    nml_mat_free(LUP->L);
+    nml_mat_free(LUP->U);
+    nml_mat_free(LUP->P);
+    free(LUP);
+}
+
+nml_mat_lup* nml_mat_LU(nml_mat *matrix){
+	// Any square matrix can be written as LU
+	// After decomposing A, easy to solve Ax = b
+	// LUx = b, where Ux = y
+	// Ly = b, which is solved using forward substitution
+	// solving x via back substitution(Ux = y)
+	
+
+	//DOOLITES => L = identity with lower triangle
+
+
+    nml_mat* copy = nml_mat_cp(matrix);
+	unsigned int i,j,num_permutations;	
+	int pivot;
+	if(!matrix->isSquare){
+		perror("Matrix is not square");
+	}
+	nml_mat *L = nml_mat_new(matrix->num_rows,matrix->num_rows);
+	nml_mat *U = nml_mat_cp(matrix);
+	nml_mat *P = nml_mat_iden(matrix->num_rows);
+	for(j = 0;j<U->num_cols;++j){
+		pivot = nml_mat_get_col_pivot(matrix,j,j);
+	}
+
+}
+
+

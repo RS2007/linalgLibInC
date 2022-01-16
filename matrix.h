@@ -9,6 +9,14 @@ typedef struct nml_mat_s
 	int isSquare;
 } nml_mat;
 
+typedef struct nml_mat_lup{
+    nml_mat* L;
+    nml_mat* U;
+    nml_mat* P;
+    unsigned int num_permutations;
+} nml_mat_lup;
+
+
 #define NML_MIN_COEFF 0.00001
 
 // constructing a matrix frame(allocating memory -> all elements are 0)
@@ -16,6 +24,12 @@ nml_mat *nml_mat_new(unsigned int num_rows, unsigned int num_cols);
 
 // destructor (destroys memory -> each malloc should have its own free)
 void nml_mat_free(nml_mat *matrix);
+
+// constructing the LUP frame(allocating memory and all the elements are 0)
+nml_mat_lup *nml_mat_lup_new(nml_mat* L,nml_mat* U, nml_mat* P,unsigned int num_permutations);
+
+// destructor (destroys memory->each malloc should have its own free(RULE))
+void nml_mat_lup_free(nml_mat_lup *LUP);
 
 // generate random number in interval
 double nml_rand_interval(int min, int max);
@@ -112,17 +126,24 @@ nml_mat *nml_mat_ref(nml_mat *matrix);
 nml_mat *nml_mat_rref(nml_mat *matrix);
 
 // LU(P) decomposition
+nml_mat_lup *nml_mat_LU(nml_mat *matrix);
 
 // forward substituition linear system
+nml_mat *solve_linear_forward();
 
 // backward substitution linear system
+nml_mat *solve_linear_backward();
 
 // linear system using LU(P)
+nml_mat *solve_linear_LU();
 
 // inverse of matrix using LU(P)
+nml_mat *nml_mat_inverse();
 
 // determinant of matrix using LU(P)
+nml_mat *nml_mat_determinant();
 
 // QR decomposition
+nml_mat *nml_mat_QR();
 
 #endif
