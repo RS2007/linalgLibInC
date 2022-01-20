@@ -3,33 +3,27 @@
 
 int main(int argc, char *argv[])
 {
-    nml_mat *new = nml_mat_new(4, 5);
-    new->data[0][0] = 3;
-    new->data[0][1] = -2;
-    new->data[0][2] = 5;
-    new->data[0][3] = 0;
-    new->data[0][4] = 2;
-    new->data[1][0] = 4;
+    nml_mat *new = nml_mat_new(4, 4);
+    new->data[0][0] = 1;
+    new->data[0][1] = 2;
+    new->data[0][2] = 2;
+    new->data[0][3] = 2;
+    new->data[1][0] = 2;
     new->data[1][1] = 5;
-    new->data[1][2] = 8;
-    new->data[1][3] = 1;
-    new->data[1][4] = 4;
-    new->data[2][0] = 1;
-    new->data[2][1] = 1;
-    new->data[2][2] = 2;
+    new->data[1][2] = 2;
+    new->data[1][3] = 5;
+    new->data[2][0] = 2;
+    new->data[2][1] = 2;
+    new->data[2][2] = 9;
     new->data[2][3] = 1;
-    new->data[2][4] = 5;
     new->data[3][0] = 2;
-    new->data[3][1] = 7;
-    new->data[3][2] = 6;
-    new->data[3][3] = 5;
-    new->data[3][4] = 7;
-    nml_mat *rref = nml_mat_rref(new);
-    nml_mat_print(rref);
-    int i;
-    printf("Solution is : \n");
-    for(i = 0;i<rref->num_rows;++i){
-        printf("%lf ",rref->data[i][4]);
-    }
+    new->data[3][1] = 5;
+    new->data[3][2] = 1;
+    new->data[3][3] = 7;
+    nml_mat_lup *a = nml_mat_LU(new);
+    nml_mat_print(a->L);
+    nml_mat_print(a->U);
+    nml_mat_print(a->P);
+
     return 0;
 }

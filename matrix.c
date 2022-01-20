@@ -449,34 +449,6 @@ int nml_mat_get_col_pivot(nml_mat *matrix, unsigned int col, unsigned int row)
 
 nml_mat *nml_mat_ref(nml_mat *matrix)
 {
-	/* trying to make sense of what they are doing
-		unsigned int currentRow = 0
-		for( unsigned int c = 0;c<m->cols;++c){
-			unsigned int r = currentRow;
-			if(r >= m->rows){
-				break; when the guys stupid(error handling)
-			}
-			for(;r<m->rows;r++){
-				if(m->elements[r][c] != 0.0f){
-					break
-				}
-			}
-			if(r == m->rows){
-				continue;
-			}
-			swapRows(m,currentRow+1,r+1); checking the first non zero and then swapping if necessary for right zeroes structure
-
-			float factor = 1/m->elements[currentRow][c];
-			for (unsigned int col = c;col<m->cols;++c){
-				m->elements[currentRow][col] *= factor;
-			}
-
-			for(r = currentRow+1;r<m->rows;++r){
-				addMultiple(m,r+1,currentRow+1,-1*m->elements[r][c]);
-			}
-			currentRow++;
-		}
-	*/
 
 	// Row echelon form(staircase form)
 	//  -- all zeroes at bottom
@@ -490,21 +462,22 @@ nml_mat *nml_mat_ref(nml_mat *matrix)
 	//  -- Multiplly new top row by 1/a to get leading 1
 	//  -- subtract multiples of that row from rows below it to get zeros under leading 1
 	nml_mat *copy = nml_mat_cp(matrix);
-    int i,j;
-    for(i = 0;i<copy->num_cols;++i){
-        int pivot = nml_mat_get_col_pivot(copy,i,i);
-        if(pivot<0)
-            continue;
-        if(pivot != i)
-            copy = nml_mat_swap_row(copy,i,pivot);
-        for(j = i+1;j<copy->num_rows;++j){
-                copy = nml_rows_add(copy,i,j,-(copy->data[j][i])/copy->data[i][i]);
-        }
-
-    }
-    return copy;
+	int i, j;
+	for (i = 0; i < copy->num_cols; ++i)
+	{
+		int pivot = nml_mat_get_col_pivot(copy, i, i);
+		if (pivot < 0)
+			continue;
+		if (pivot != i)
+			copy = nml_mat_swap_row(copy, i, pivot);
+		for (j = i + 1; j < copy->num_rows; ++j)
+		{
+			copy = nml_rows_add(copy, i, j, -(copy->data[j][i]) / copy->data[i][i]);
+		}
+	}
+	return copy;
 	// !REFACTOR change into a for loop
-    
+
 	//	num_rows,num_cols = arr.shape
 	// if(num_rows != num_cols): return "error"
 	// for k in range(num_rows-1):
@@ -518,65 +491,104 @@ nml_mat *nml_mat_ref(nml_mat *matrix)
 nml_mat *nml_mat_rref(nml_mat *matrix)
 {
 	nml_mat *copy = nml_mat_cp(matrix);
-	int i,j;
-	for(i = 0;i<copy->num_cols;++i){
-		int pivot = nml_mat_get_col_pivot(copy,i,i);
-		if(pivot<0)
+	int i, j;
+	for (i = 0; i < copy->num_cols; ++i)
+	{
+		int pivot = nml_mat_get_col_pivot(copy, i, i);
+		if (pivot < 0)
 			continue;
-		if(pivot != i)		
-			copy = nml_mat_swap_row(copy,i,pivot);
-		copy = nml_row_multipy_scalar(copy,i,1/copy->data[i][i]);
+		if (pivot != i)
+			copy = nml_mat_swap_row(copy, i, pivot);
+		copy = nml_row_multipy_scalar(copy, i, 1 / copy->data[i][i]);
 		nml_mat_print(copy);
-		for(j = 0;j<copy->num_rows;++j){
-			if(j != i){
-				copy = nml_rows_add(copy,i,j,-(copy->data[j][i]));
-			}	
+		for (j = 0; j < copy->num_rows; ++j)
+		{
+			if (j != i)
+			{
+				copy = nml_rows_add(copy, i, j, -(copy->data[j][i]));
+			}
 			continue;
 		}
 	}
 	return copy;
 }
 
-nml_mat_lup* nml_mat_lup_new(nml_mat* L,nml_mat* U,nml_mat* P,unsigned int num_permutations){
-    nml_mat_lup *r = malloc(sizeof(*r));
-    r->L = L;
-    r->U = U;
-    r->P = P;
-    r->num_permutations= num_permutations;
-    return r;
+nml_mat_lup *nml_mat_lup_new(nml_mat *L, nml_mat *U, nml_mat *P, unsigned int num_permutations)
+{
+	nml_mat_lup *r = malloc(sizeof(*r));
+	r->L = L;
+	r->U = U;
+	r->P = P;
+	r->num_permutations = num_permutations;
+	return r;
+}
+nml_mat *nml_mat_swap_row_LU(nml_mat *matrix, unsigned int row1, unsigned int row2)
+{
+	if (row1 > matrix->num_rows || row2 > matrix->num_rows)
+	{
+		perror("Invalid row");
+	}
+	nml_mat *copy = nml_mat_cp(matrix);
+	// swap the rows(contiguous memory locations)
+	double *temp = copy->data[row1];
+	copy->data[row1] = copy->data[row2];
+	copy->data[row2] = temp;
+	return copy;
 }
 
-void nml_mat_lup_free(nml_mat_lup* LUP){
-    nml_mat_free(LUP->L);
-    nml_mat_free(LUP->U);
-    nml_mat_free(LUP->P);
-    free(LUP);
+void nml_mat_lup_free(nml_mat_lup *LUP)
+{
+	nml_mat_free(LUP->L);
+	nml_mat_free(LUP->U);
+	nml_mat_free(LUP->P);
+	free(LUP);
 }
 
-nml_mat_lup* nml_mat_LU(nml_mat *matrix){
+nml_mat_lup *nml_mat_LU(nml_mat *matrix)
+{
 	// Any square matrix can be written as LU
 	// After decomposing A, easy to solve Ax = b
 	// LUx = b, where Ux = y
 	// Ly = b, which is solved using forward substitution
 	// solving x via back substitution(Ux = y)
-	
-
-	//DOOLITES => L = identity with lower triangle
-
-
-    nml_mat* copy = nml_mat_cp(matrix);
-	unsigned int i,j,num_permutations;	
-	int pivot;
-	if(!matrix->isSquare){
-		perror("Matrix is not square");
+	if (!matrix->isSquare)
+	{
+		perror("Invalid dimensions: Please enter a square matrix");
 	}
-	nml_mat *L = nml_mat_new(matrix->num_rows,matrix->num_rows);
 	nml_mat *U = nml_mat_cp(matrix);
+	unsigned int i, j;
+	unsigned int num_permutations = 0;
 	nml_mat *P = nml_mat_iden(matrix->num_rows);
-	for(j = 0;j<U->num_cols;++j){
-		pivot = nml_mat_get_col_pivot(matrix,j,j);
+	nml_mat *L = nml_mat_sqr(matrix->num_rows);
+	for (i = 0; i < U->num_cols; ++i)
+	{
+		int pivot = nml_mat_get_col_pivot(U, i, i);
+		if (pivot < 0)
+			continue;
+		if (pivot != i)
+		{
+			U = nml_mat_swap_row(U, i, pivot);
+			P = nml_mat_swap_row(P, i, pivot);
+			L = nml_mat_swap_row(L, i, pivot);
+			printf("U\n");
+			nml_mat_print(U);
+			printf("P\n");
+			nml_mat_print(P);
+			printf("L\n");
+			nml_mat_print(L);
+			num_permutations++;
+		}
+		for (j = i + 1; j < U->num_rows; ++j)
+		{
+			L->data[j][i] = (U->data[j][i] / U->data[i][i]);
+			U = nml_rows_add(U, i, j, -(U->data[j][i]) / U->data[i][i]);
+			printf("U2\n");
+			nml_mat_print(U);
+			printf("L2\n");
+			nml_mat_print(L);
+		}
 	}
+	L = nml_set_diagonal_elements(L, 1);
 
+	return nml_mat_lup_new(L, U, P, num_permutations);
 }
-
-

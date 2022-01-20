@@ -117,13 +117,17 @@ nml_mat *nml_mat_mul_naive(nml_mat *matrix1, nml_mat *matrix2);
 nml_mat *nml_mat_mul_strassen(nml_mat *matrix1, nml_mat *matrix2);
 
 // get the pivot in a column
-int nml_mat_get_col_pivot(nml_mat *matrix, unsigned int col, unsigned int row);
+int nml_mat_get_col_pivot(nml_mat *matrix, unsigned introw1, unsigned int row2);
 
 // row echelon form
 nml_mat *nml_mat_ref(nml_mat *matrix);
 
 // reduced row echelon form
 nml_mat *nml_mat_rref(nml_mat *matrix);
+
+nml_mat* nml_mat_swap_row_LU(nml_mat* matrix,unsigned int row1,unsigned int row2);
+
+
 
 // LU(P) decomposition
 nml_mat_lup *nml_mat_LU(nml_mat *matrix);
