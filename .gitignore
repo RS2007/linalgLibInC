@@ -13,3 +13,6 @@ valgrind-3.17.0
 valgrind-3.17.0.tar.bz2
 valgrind-3.18.1
 valgrind-3.18.1.tar.bz2
+cmake-build-debug-coverage
+*.exe
+
