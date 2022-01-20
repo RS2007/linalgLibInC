@@ -119,7 +119,7 @@ nml_mat *nml_mat_mul_naive(nml_mat *matrix1, nml_mat *matrix2);
 nml_mat *nml_mat_mul_strassen(nml_mat *matrix1, nml_mat *matrix2);
 
 // get the pivot in a column
-int nml_mat_get_col_pivot(nml_mat *matrix, unsigned introw1, unsigned int row2);
+int nml_mat_get_col_pivot(nml_mat *matrix, unsigned int row1, unsigned int row2);
 
 // row echelon form
 nml_mat *nml_mat_ref(nml_mat *matrix);
@@ -137,13 +137,13 @@ bool nml_mat_isLowerTriangular(nml_mat *L);
 bool nml_mat_isUpperTriangular(nml_mat *U);
 
 // forward substituition linear system
-nml_mat *solve_linear_forward();
+nml_mat *solve_linear_forward(nml_mat *L, nml_mat *b);
 
 // backward substitution linear system
-nml_mat *solve_linear_backward();
+nml_mat *solve_linear_backward(nml_mat *U, nml_mat *b);
 
 // linear system using LU(P)
-nml_mat *solve_linear_LU();
+nml_mat *solve_linear_LU(nml_mat *A, nml_mat *b);
 
 // inverse of matrix using LU(P)
 nml_mat *nml_mat_inverse();

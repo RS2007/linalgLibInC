@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/ROHITH SURESH/Desktop/linalgLibInC/matrix.c
+stdio.h
+-
+stdlib.h
+-
+time.h
+-
+stdbool.h
+-
+float.h
+-
+math.h
+-
+matrix.h
+C:/Users/ROHITH SURESH/Desktop/linalgLibInC/matrix.h
+string.h
+-
+
+C:/Users/ROHITH SURESH/Desktop/linalgLibInC/matrix.h
+stdbool.h
+-
+
+C:/Users/ROHITH SURESH/Desktop/linalgLibInC/test.c
+stdio.h
+-
+matrix.h
+C:/Users/ROHITH SURESH/Desktop/linalgLibInC/matrix.h
+

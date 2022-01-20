@@ -409,12 +409,12 @@ nml_mat *nml_mat_mul_naive(nml_mat *matrix1, nml_mat *matrix2)
 		return NULL;
 	}
 	nml_mat *mul = nml_mat_new(matrix1->num_rows, matrix2->num_cols);
-	int i, j, k;
+	uint i, j, k;
 	for (i = 0; i < matrix1->num_cols; ++i)
 	{
 		for (j = 0; j < matrix2->num_rows; ++j)
 		{
-			mul->data[i][j] = 0;
+			mul->data[i][j] = 0.0;
 			for (k = 0; k < matrix1->num_cols; ++k)
 			{
 				mul->data[i][j] += matrix1->data[i][k] * matrix2->data[k][j];
