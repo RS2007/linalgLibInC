@@ -1,6 +1,8 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include <stdbool.h>
+
 typedef struct nml_mat_s
 {
 	unsigned int num_rows;
@@ -9,13 +11,13 @@ typedef struct nml_mat_s
 	int isSquare;
 } nml_mat;
 
-typedef struct nml_mat_lup{
-    nml_mat* L;
-    nml_mat* U;
-    nml_mat* P;
-    unsigned int num_permutations;
+typedef struct nml_mat_lup
+{
+	nml_mat *L;
+	nml_mat *U;
+	nml_mat *P;
+	unsigned int num_permutations;
 } nml_mat_lup;
-
 
 #define NML_MIN_COEFF 0.00001
 
@@ -26,7 +28,7 @@ nml_mat *nml_mat_new(unsigned int num_rows, unsigned int num_cols);
 void nml_mat_free(nml_mat *matrix);
 
 // constructing the LUP frame(allocating memory and all the elements are 0)
-nml_mat_lup *nml_mat_lup_new(nml_mat* L,nml_mat* U, nml_mat* P,unsigned int num_permutations);
+nml_mat_lup *nml_mat_lup_new(nml_mat *L, nml_mat *U, nml_mat *P, unsigned int num_permutations);
 
 // destructor (destroys memory->each malloc should have its own free(RULE))
 void nml_mat_lup_free(nml_mat_lup *LUP);
@@ -125,12 +127,14 @@ nml_mat *nml_mat_ref(nml_mat *matrix);
 // reduced row echelon form
 nml_mat *nml_mat_rref(nml_mat *matrix);
 
-nml_mat* nml_mat_swap_row_LU(nml_mat* matrix,unsigned int row1,unsigned int row2);
-
-
-
 // LU(P) decomposition
 nml_mat_lup *nml_mat_LU(nml_mat *matrix);
+
+// Check if matrix is lower triangular
+bool nml_mat_isLowerTriangular(nml_mat *L);
+
+// Check if matrix is upper triangular
+bool nml_mat_isUpperTriangular(nml_mat *U);
 
 // forward substituition linear system
 nml_mat *solve_linear_forward();

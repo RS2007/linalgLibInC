@@ -1,14 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 #include <float.h>
 #include <math.h>
 #include "matrix.h"
 #include <string.h>
 
+#define uint unsigned int
 #define NML_MIN_COEFF 0.00001
 
-nml_mat *nml_mat_new(unsigned int num_rows, unsigned int num_cols)
+nml_mat *nml_mat_new(uint num_rows, uint num_cols)
 {
 	// Check if rows are 0
 	if (num_rows == 0)
@@ -26,7 +28,6 @@ nml_mat *nml_mat_new(unsigned int num_rows, unsigned int num_cols)
 
 	// giving nml_mat its memory
 	nml_mat *m = (nml_mat *)malloc(sizeof(nml_mat));
-	// NP_CHECK(m);
 	m->num_rows = num_rows;
 	m->num_cols = num_cols;
 	m->isSquare = (num_rows == num_cols) ? 1 : 0;
@@ -36,7 +37,7 @@ nml_mat *nml_mat_new(unsigned int num_rows, unsigned int num_cols)
 
 	m->data = calloc(m->num_rows, sizeof(*m->data));
 	// NP_CHECK(m->data);
-	unsigned int i;
+	uint i;
 
 	// structure established complete structure by adding the columns/values
 
@@ -52,7 +53,7 @@ nml_mat *nml_mat_new(unsigned int num_rows, unsigned int num_cols)
 }
 void nml_mat_free(nml_mat *matrix)
 {
-	unsigned int i;
+	uint i;
 	// each rows memory is freed
 	for (i = 0; i < matrix->num_rows; ++i)
 	{
@@ -70,10 +71,10 @@ double nml_rand_interval(int min, int max)
 	return d;
 }
 
-nml_mat *nml_mat_rnd(unsigned int num_rows, unsigned int num_cols, int min, int max)
+nml_mat *nml_mat_rnd(uint num_rows, uint num_cols, int min, int max)
 {
 	nml_mat *res = nml_mat_new(num_rows, num_cols);
-	unsigned int i, j;
+	uint i, j;
 
 	for (i = 0; i < num_rows; ++i)
 	{
@@ -85,17 +86,17 @@ nml_mat *nml_mat_rnd(unsigned int num_rows, unsigned int num_cols, int min, int 
 	return res;
 }
 
-nml_mat *nml_mat_sqr(unsigned int rowCol)
+nml_mat *nml_mat_sqr(uint rowCol)
 {
 	return nml_mat_new(rowCol, rowCol);
 }
 
-nml_mat *nml_mat_sqr_rnd(unsigned int rowCol, int min, int max)
+nml_mat *nml_mat_sqr_rnd(uint rowCol, int min, int max)
 {
 	return nml_mat_rnd(rowCol, rowCol, min, max);
 }
 
-nml_mat *nml_mat_iden(unsigned int rowCol)
+nml_mat *nml_mat_iden(uint rowCol)
 {
 	nml_mat *iden = nml_mat_sqr(rowCol);
 	int i;
@@ -109,8 +110,8 @@ nml_mat *nml_mat_iden(unsigned int rowCol)
 nml_mat *nml_mat_fromfile(FILE *f)
 {
 	int i, j;
-	unsigned int num_rows = 0;
-	unsigned int num_cols = 0;
+	uint num_rows = 0;
+	uint num_cols = 0;
 	fscanf(f, "%u", &num_rows);
 	fscanf(f, "%u", &num_cols);
 	nml_mat *res = nml_mat_new(num_rows, num_cols);
@@ -165,7 +166,7 @@ int nml_mat_equal(nml_mat *m1, nml_mat *m2)
 	}
 }
 
-nml_mat *nml_mat_get_column(nml_mat *matrix, unsigned int col)
+nml_mat *nml_mat_get_column(nml_mat *matrix, uint col)
 {
 	int i;
 	nml_mat *column = nml_mat_new(matrix->num_rows, 1);
@@ -176,7 +177,7 @@ nml_mat *nml_mat_get_column(nml_mat *matrix, unsigned int col)
 	return column;
 }
 
-nml_mat *nml_mat_get_row(nml_mat *matrix, unsigned int row)
+nml_mat *nml_mat_get_row(nml_mat *matrix, uint row)
 {
 	nml_mat *rowMat = nml_mat_new(1, matrix->num_cols);
 	// row is contigous set of memory
@@ -189,9 +190,9 @@ nml_mat *nml_set_all_elements(nml_mat *matrix, double num)
 {
 	int i, j;
 	nml_mat *copy = nml_mat_cp(matrix);
-	for (i = 0; i < matrix->num_rows; ++i)
+	for (i = 0; i < copy->num_rows; ++i)
 	{
-		for (j = 0; j < matrix->num_cols; ++j)
+		for (j = 0; j < copy->num_cols; ++j)
 		{
 			copy->data[i][j] = num;
 		}
@@ -203,14 +204,14 @@ nml_mat *nml_set_diagonal_elements(nml_mat *matrix, double num)
 {
 	int i;
 	nml_mat *copy = nml_mat_cp(matrix);
-	for (i = 0; i < matrix->num_rows; ++i)
+	for (i = 0; i < copy->num_rows; ++i)
 	{
 		copy->data[i][i] = num;
 	}
 	return copy;
 }
 
-nml_mat *nml_row_multipy_scalar(nml_mat *matrix, unsigned int row, double scalar)
+nml_mat *nml_row_multipy_scalar(nml_mat *matrix, uint row, double scalar)
 {
 	int i;
 	for (i = 0; i < matrix->num_cols; ++i)
@@ -219,7 +220,7 @@ nml_mat *nml_row_multipy_scalar(nml_mat *matrix, unsigned int row, double scalar
 	}
 	return matrix;
 }
-nml_mat *nml_col_multiply_scalar(nml_mat *matrix, unsigned int col, double scalar)
+nml_mat *nml_col_multiply_scalar(nml_mat *matrix, uint col, double scalar)
 {
 	int i;
 	for (i = 0; i < matrix->num_cols; ++i)
@@ -229,11 +230,11 @@ nml_mat *nml_col_multiply_scalar(nml_mat *matrix, unsigned int col, double scala
 	return matrix;
 }
 
-nml_mat *nml_rows_add(nml_mat *matrix, unsigned int addendum, unsigned int original, double multiplier)
+nml_mat *nml_rows_add(nml_mat *matrix, uint addendum, uint original, double multiplier)
 {
 	int i;
 	nml_mat *copy = nml_mat_cp(matrix);
-	for (i = 0; i < matrix->num_cols; ++i)
+	for (i = 0; i < copy->num_cols; ++i)
 	{
 		copy->data[original][i] = copy->data[original][i] + multiplier * copy->data[addendum][i];
 	}
@@ -257,9 +258,9 @@ nml_mat *nml_mat_multiply_scalar(nml_mat *matrix, int scalar)
 {
 	nml_mat *copy = nml_mat_cp(matrix);
 	int i, j;
-	for (i = 0; i < matrix->num_rows; ++i)
+	for (i = 0; i < copy->num_rows; ++i)
 	{
-		for (j = 0; j < matrix->num_cols; ++j)
+		for (j = 0; j < copy->num_cols; ++j)
 		{
 			copy->data[i][j] = copy->data[i][j] * scalar;
 		}
@@ -267,7 +268,7 @@ nml_mat *nml_mat_multiply_scalar(nml_mat *matrix, int scalar)
 	return copy;
 }
 
-nml_mat *nml_mat_remove_column(nml_mat *matrix, unsigned int column)
+nml_mat *nml_mat_remove_column(nml_mat *matrix, uint column)
 {
 	if (column > matrix->num_cols)
 	{
@@ -291,7 +292,7 @@ nml_mat *nml_mat_remove_column(nml_mat *matrix, unsigned int column)
 	return r;
 }
 
-nml_mat *nml_mat_remove_row(nml_mat *matrix, unsigned int row)
+nml_mat *nml_mat_remove_row(nml_mat *matrix, uint row)
 {
 	if (row > matrix->num_rows)
 	{
@@ -314,7 +315,7 @@ nml_mat *nml_mat_remove_row(nml_mat *matrix, unsigned int row)
 	return r;
 }
 
-nml_mat *nml_mat_swap_row(nml_mat *matrix, unsigned int row1, unsigned int row2)
+nml_mat *nml_mat_swap_row(nml_mat *matrix, uint row1, uint row2)
 {
 	if (row1 > matrix->num_rows || row2 > matrix->num_rows)
 	{
@@ -328,7 +329,7 @@ nml_mat *nml_mat_swap_row(nml_mat *matrix, unsigned int row1, unsigned int row2)
 	return copy;
 }
 
-nml_mat *nml_mat_swap_column(nml_mat *matrix, unsigned int col1, unsigned int col2)
+nml_mat *nml_mat_swap_column(nml_mat *matrix, uint col1, uint col2)
 {
 	if (col1 > matrix->num_cols || col2 > matrix->num_cols)
 	{
@@ -434,7 +435,7 @@ nml_mat *nml_mat_mul_strassen(nml_mat *matrix1, nml_mat *matrix2)
 	// Filled by strassen algorithm
 }
 
-int nml_mat_get_col_pivot(nml_mat *matrix, unsigned int col, unsigned int row)
+int nml_mat_get_col_pivot(nml_mat *matrix, uint col, uint row)
 {
 	int i;
 	for (i = row; i < matrix->num_rows; ++i)
@@ -513,7 +514,7 @@ nml_mat *nml_mat_rref(nml_mat *matrix)
 	return copy;
 }
 
-nml_mat_lup *nml_mat_lup_new(nml_mat *L, nml_mat *U, nml_mat *P, unsigned int num_permutations)
+nml_mat_lup *nml_mat_lup_new(nml_mat *L, nml_mat *U, nml_mat *P, uint num_permutations)
 {
 	nml_mat_lup *r = malloc(sizeof(*r));
 	r->L = L;
@@ -521,19 +522,6 @@ nml_mat_lup *nml_mat_lup_new(nml_mat *L, nml_mat *U, nml_mat *P, unsigned int nu
 	r->P = P;
 	r->num_permutations = num_permutations;
 	return r;
-}
-nml_mat *nml_mat_swap_row_LU(nml_mat *matrix, unsigned int row1, unsigned int row2)
-{
-	if (row1 > matrix->num_rows || row2 > matrix->num_rows)
-	{
-		perror("Invalid row");
-	}
-	nml_mat *copy = nml_mat_cp(matrix);
-	// swap the rows(contiguous memory locations)
-	double *temp = copy->data[row1];
-	copy->data[row1] = copy->data[row2];
-	copy->data[row2] = temp;
-	return copy;
 }
 
 void nml_mat_lup_free(nml_mat_lup *LUP)
@@ -556,10 +544,10 @@ nml_mat_lup *nml_mat_LU(nml_mat *matrix)
 		perror("Invalid dimensions: Please enter a square matrix");
 	}
 	nml_mat *U = nml_mat_cp(matrix);
-	unsigned int i, j;
-	unsigned int num_permutations = 0;
-	nml_mat *P = nml_mat_iden(matrix->num_rows);
-	nml_mat *L = nml_mat_sqr(matrix->num_rows);
+	uint i, j;
+	uint num_permutations = 0;
+	nml_mat *P = nml_mat_iden(U->num_rows);
+	nml_mat *L = nml_mat_sqr(U->num_rows);
 	for (i = 0; i < U->num_cols; ++i)
 	{
 		int pivot = nml_mat_get_col_pivot(U, i, i);
@@ -570,25 +558,115 @@ nml_mat_lup *nml_mat_LU(nml_mat *matrix)
 			U = nml_mat_swap_row(U, i, pivot);
 			P = nml_mat_swap_row(P, i, pivot);
 			L = nml_mat_swap_row(L, i, pivot);
-			printf("U\n");
-			nml_mat_print(U);
-			printf("P\n");
-			nml_mat_print(P);
-			printf("L\n");
-			nml_mat_print(L);
 			num_permutations++;
 		}
 		for (j = i + 1; j < U->num_rows; ++j)
 		{
 			L->data[j][i] = (U->data[j][i] / U->data[i][i]);
 			U = nml_rows_add(U, i, j, -(U->data[j][i]) / U->data[i][i]);
-			printf("U2\n");
-			nml_mat_print(U);
-			printf("L2\n");
-			nml_mat_print(L);
 		}
 	}
 	L = nml_set_diagonal_elements(L, 1);
 
-	return nml_mat_lup_new(L, U, P, num_permutations);
+	nml_mat_lup *res = nml_mat_lup_new(L, U, P, num_permutations);
+
+	return res;
+}
+
+bool nml_mat_isLowerTriangular(nml_mat *L)
+{
+	uint i, j;
+	bool isLowerTriangular = 1;
+	for (i = 0; i < L->num_rows; ++i)
+	{
+		for (j = i + 1; j < L->num_cols; ++j)
+		{
+			if (L->data[i][j] != 0)
+			{
+				isLowerTriangular = 0;
+				break;
+			}
+		}
+	}
+	return isLowerTriangular;
+}
+
+bool nml_mat_isUpperTriangular(nml_mat *U)
+{
+	uint i, j;
+	bool isUpperTriangular = 1;
+	for (i = 0; i < U->num_rows; ++i)
+	{
+		for (j = 0; j < i; ++j)
+		{
+			if (U->data[i][j] != 0)
+			{
+				isUpperTriangular = 0;
+				break;
+			}
+		}
+	}
+	return isUpperTriangular;
+}
+
+nml_mat *solve_linear_forward(nml_mat *L, nml_mat *b)
+{
+	if (!nml_mat_isLowerTriangular(L) || b->num_cols != 1)
+	{
+		perror("Error not lower triangular matrix or b is not vector");
+		return nml_mat_new(1, 1);
+	}
+	if (L->num_rows != b->num_rows)
+	{
+		perror("Error: Matrix and vector is of incompatible dimensions");
+		return nml_mat_new(1, 1);
+	}
+	uint i, j;
+	nml_mat *a = nml_mat_new(L->num_rows, 1);
+	for (i = 0; i < L->num_rows; ++i)
+	{
+		double accum = b->data[i][0];
+		for (j = 0; j < i; ++j)
+		{
+			accum -= L->data[i][j] * a->data[j][0];
+		}
+		a->data[i][0] = accum / L->data[i][i];
+	}
+	return a;
+}
+
+nml_mat *solve_linear_backward(nml_mat *U, nml_mat *b)
+{
+	if (!nml_mat_isUpperTriangular(U) || b->num_cols != 1)
+	{
+		perror("Error not upper triangular matrix or b is not vector");
+		return nml_mat_new(1, 1);
+	}
+	if (U->num_rows != b->num_rows)
+	{
+		perror("Error: Matrix and vector is of incompatible dimensions");
+		return nml_mat_new(1, 1);
+	}
+	int i, j;
+	nml_mat *a = nml_mat_new(U->num_rows, 1);
+	for (i = U->num_rows - 1; i >= 0; --i)
+	{
+		double accum = b->data[i][0];
+		for (j = i + 1; j < U->num_cols; ++j)
+		{
+			accum -= U->data[i][j] * a->data[j][0];
+		}
+		a->data[i][0] = accum / U->data[i][i];
+	}
+	return a;
+}
+
+nml_mat *solve_linear_LU(nml_mat *A, nml_mat *b)
+{
+	nml_mat_lup *LU = nml_mat_LU(A);
+	nml_mat *Pb = nml_mat_mul_naive(LU->P, b);
+	nml_mat *y = solve_linear_forward(LU->L, Pb);
+	nml_mat *x = solve_linear_backward(LU->U, y);
+
+	return x;
 }

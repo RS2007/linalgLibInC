@@ -9,3 +9,5 @@
 *.swp
 *.o
 *.ipynb
+valgrind-3.17.0
+valgrind-3.17.0.tar.bz2
