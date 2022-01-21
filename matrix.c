@@ -12,6 +12,7 @@
 
 nml_mat *nml_mat_new(uint num_rows, uint num_cols)
 {
+	/* STUDY MULTIDIMENSIONAL ARRAYS AND POINTERS*/
 	// Check if rows are 0
 	if (num_rows == 0)
 	{
@@ -28,6 +29,7 @@ nml_mat *nml_mat_new(uint num_rows, uint num_cols)
 
 	// giving nml_mat its memory
 	nml_mat *m = (nml_mat *)malloc(sizeof(nml_mat));
+	printf("nml_mat_new(malloc): pointer: %p , size: %lu \n",(void*)m,sizeof(m));
 	m->num_rows = num_rows;
 	m->num_cols = num_cols;
 	m->isSquare = (num_rows == num_cols) ? 1 : 0;
@@ -36,6 +38,7 @@ nml_mat *nml_mat_new(uint num_rows, uint num_cols)
 	// setting the outer layer(row layer)
 
 	m->data = calloc(m->num_rows, sizeof(*m->data));
+	printf("nml_mat_new(row calloc): pointer: %p , size: %lu \n",(void*)m->data,sizeof(m->data));
 	// NP_CHECK(m->data);
 	uint i;
 
@@ -46,7 +49,8 @@ nml_mat *nml_mat_new(uint num_rows, uint num_cols)
 
 		// double de-referencing for individual numbers iterating over rows
 
-		m->data[i] = calloc(m->num_cols, sizeof(**m->data));
+		m->data[i] = calloc(m->num_cols, sizeof(double));
+		printf("nml_mat_new(col calloc): pointer: %p , size: %lu \n",(void*)m->data[i],sizeof(m->data[i]));
 		// NP_CHECK(m->data[i]);
 	}
 	return m;
@@ -408,7 +412,9 @@ nml_mat *nml_mat_mul_naive(nml_mat *matrix1, nml_mat *matrix2)
 		perror("Cannot multiply matrices, incompatible dimensions");
 		return NULL;
 	}
+	printf("%i %i",matrix1->num_rows,matrix2->num_cols);
 	nml_mat *mul = nml_mat_new(matrix1->num_rows, matrix2->num_cols);
+
 	uint i, j, k;
 	for (i = 0; i < matrix1->num_cols; ++i)
 	{
